@@ -198,6 +198,9 @@ def resolve_field(exe_context, parent_type, source, field_asts):
 def resolve_or_error(resolve_fn, source, args, context, info, executor):
     try:
         return executor.execute(resolve_fn, source, args, context, info)
+    except GraphQLError as e:
+        e.stack = sys.exc_info()[2]
+        return e
     except Exception as e:
         logger.exception("An error occurred while resolving field {}.{}".format(
             info.parent_type.name, info.field_name
